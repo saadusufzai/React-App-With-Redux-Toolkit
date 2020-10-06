@@ -3,18 +3,23 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   decrement,
   increment,
-  incrementByAmount,
+  fetchRandomNumber,
   incrementAsync,
+  incrementByAmount,
   selectCount,
 } from "./counterSlice";
 import styles from "./Counter.module.css";
 
-export function Counter() {
-  // const count = useSelector((state)=>state.counter.value); can also be used like this
-  const count = useSelector(selectCount);
-  const dispatch = useDispatch();
-  const [incrementAmount, setIncrementAmount] = useState("2");
 
+export function Counter() {
+//  const count = useSelector((state)=>state.counter.value); can also be used like this
+    const counter = useSelector(selectCount);
+    const dispatch = useDispatch();
+    const [incrementAmount, setIncrementAmount] = useState("2");
+
+  if(counter.isLoading){
+    return <div>Loanding....</div>
+  }  
   return (
     <div>
       <div className={styles.row}>
@@ -25,7 +30,7 @@ export function Counter() {
         >
           +
         </button>
-        <span className={styles.value}>{count}</span>
+        <span className={styles.value}>{counter.value}</span>
         <button
           className={styles.button}
           aria-label="Decrement value"
@@ -41,13 +46,22 @@ export function Counter() {
           value={incrementAmount}
           onChange={(e) => setIncrementAmount(e.target.value)}
         />
+        
         <button
           className={styles.button}
           onClick={() =>
             dispatch(incrementByAmount(Number(incrementAmount) || 0))
           }
         >
-          Add Amount
+          Add Ammount
+          </button>
+          <button
+          className={styles.button}
+          onClick={() =>
+            dispatch(fetchRandomNumber())
+          }
+        >
+          Fetch From Server
         </button>
         <button
           className={styles.asyncButton}
