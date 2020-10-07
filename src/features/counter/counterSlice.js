@@ -1,19 +1,18 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export const fetchRandomNumber = createAsyncThunk(
   'numbers/fetchRandomNumber',
   async (data, thunkAPI) => {
     const response = await fetch('/api/randomnumber');
-    console.log(thunkAPI)
     return await response.json();
- 
   }
 );
 
 export const counterSlice = createSlice({
-  name: "counter",
+  name: 'counter',
   initialState: {
     value: 0,
+    isLoading: false,
   },
   reducers: {
     increment: (state) => {
@@ -29,28 +28,26 @@ export const counterSlice = createSlice({
     incrementByAmount: (state, action) => {
       state.value += action.payload;
     },
-    extraReducer: {
-      [fetchRandomNumber.fulfilled]: (state, action) => {
-        console.log(action)
-        state.value += action.payload;
-        
-      },
-      [fetchRandomNumber.reject]: (state, action) => {
-        console.log("api call rejected");
-        state.isLoading = false;
-      },
-      [fetchRandomNumber.pending]: (state, action) => {
-        state.isLoading = true;
-      },
+    reset: (state) => {
+      state.value = 0;
+    },
+  },
+  extraReducers: {
+    [fetchRandomNumber.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.value += action.payload;
+    },
+    [fetchRandomNumber.reject]: (state, action) => {
+      console.log('api call rejected');
+      state.isLoading = false;
+    },
+    [fetchRandomNumber.pending]: (state, action) => {
+      state.isLoading = true;
     },
   },
 });
 
-export const {
-  increment,
-  decrement,
-  incrementByAmount,
-} = counterSlice.actions;
+export const { increment, decrement, reset, incrementByAmount } = counterSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

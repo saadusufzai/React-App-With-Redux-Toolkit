@@ -5,7 +5,6 @@ export const makeServer = ({ environment = "test" } = {}) => {
     environment,
     routes() {
       this.get("/api/randomnumber", () => {
-          console.log('working' ,Math.ceil(Math.random() * 10))
         return Math.ceil(Math.random() * 10);
       });
     },
